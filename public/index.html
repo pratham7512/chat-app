@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-app</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div>
+        <div style="display: flex; justify-content: space-around; height: 90vh">
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+                <div id="output" style="width: 400px; height: 75%; border:solid; border-radius:20px; margin-bottom:30px">
+                    <div id="chatbox" style="margin:10px; height:95%;">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content:space-between;">
+                    <input id="input" type="text" placeholder="Chat now.." style="width: 300px; height:40px; border: solid; border-radius: 20px; font-size: large; padding: 5px;">
+                    <button id="send" style="background-color: white; border-radius: 20px; width:70px; font-size: large; border:solid;">Send</button>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        const socket = io(); // Assuming you have a Socket.IO server running
+
+        const chatbox = document.getElementById("chatbox");
+        const input = document.getElementById("input");
+        const send = document.getElementById("send");
+        let chats = "";
+
+        send.addEventListener("click", () => {
+            socket.emit('message', input.value);
+            chats += `<div style="background-color:grey; font-size:large;">${input.value}</div>`;
+            chatbox.innerHTML = chats;
+            input.value = "";
+        });
+        socket.on("recieve",(input)=>{
+            chats += `<div style="font-size:large;">${input}</div>`;
+            chatbox.innerHTML = chats;
+            input.value = "";
+        })
+    </script>
+</body>
+</html>
